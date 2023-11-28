@@ -1,8 +1,9 @@
 #include <xc.inc>
 
 extrn	UART_Setup, UART_Transmit_Message  ; external uart subroutines
-extrn	LCD_Setup, LCD_Write_Message, LCD_Write_Hex ; external LCD subroutines
+extrn	LCD_Setup, LCD_Write_Message, LCD_Write_Hex, LCD_line2, LCD_Send_Byte_D ; external LCD subroutines
 extrn	ADC_Setup, ADC_Read		   ; external ADC subroutines
+extrn   KeyPad_Setup,KeyPad_input2, key_number
 	
 psect	udata_acs   ; reserve data space in access ram
 counter:    ds 1    ; reserve one byte for a counter variable
@@ -11,12 +12,20 @@ delay_count:ds 1    ; reserve one byte for counter in the delay routine
 psect	udata_bank4 ; reserve data anywhere in RAM (here at 0x400)
 myArray:    ds 0x80 ; reserve 128 bytes for message data
 
+
 psect	data    
 	; ******* myTable, data in programme memory, and its length *****
 myTable:
-	db	'H','e','l','l','o',' ','W','o','r','l','d','!',0x0a
+	db	'T', 'E', 'M','P','E','R', 'A', 'T','U','R','E',':',0x0a
 					; message, plus carriage return
 	myTable_l   EQU	13	; length of data
+	align	2
+	
+	
+myTable2:
+	db	'T', 'I', 'M','E',':',0x0a
+					; message, plus carriage return
+	myTable_2   EQU	6	; length of data
 	align	2
     
 psect	code, abs	
@@ -29,10 +38,14 @@ setup:	bcf	CFGS	; point to Flash program memory
 	call	UART_Setup	; setup UART
 	call	LCD_Setup	; setup UART
 	call	ADC_Setup	; setup ADC
-	goto	start
+	call    KeyPad_Setup
+	movlw	0x00
+	movwf	TRISD
+	goto	first_line
 	
 	; ******* Main programme ****************************************
-start: 	lfsr	0, myArray	; Load FSR0 with address in RAM	
+first_line: 	
+	lfsr	0, myArray	; Load FSR0 with address in RAM	
 	movlw	low highword(myTable)	; address of data in PM
 	movwf	TBLPTRU, A		; load upper bits to TBLPTRU
 	movlw	high(myTable)	; address of data in PM
@@ -41,10 +54,10 @@ start: 	lfsr	0, myArray	; Load FSR0 with address in RAM
 	movwf	TBLPTRL, A		; load low byte to TBLPTRL
 	movlw	myTable_l	; bytes to read
 	movwf 	counter, A		; our counter register
-loop: 	tblrd*+			; one byte from PM to TABLAT, increment TBLPRT
+loop1: 	tblrd*+			; one byte from PM to TABLAT, increment TBLPRT
 	movff	TABLAT, POSTINC0; move data from TABLAT to (FSR0), inc FSR0	
 	decfsz	counter, A		; count down to zero
-	bra	loop		; keep going until finished
+	bra	loop1		; keep going until finished
 		
 	movlw	myTable_l	; output message to UART
 	lfsr	2, myArray
@@ -54,14 +67,48 @@ loop: 	tblrd*+			; one byte from PM to TABLAT, increment TBLPRT
 				; don't send the final carriage return to LCD
 	lfsr	2, myArray
 	call	LCD_Write_Message
+	call	input2
 	
-measure_loop:
-	call	ADC_Read
-	movf	ADRESH, W, A
-	call	LCD_Write_Hex
-	movf	ADRESL, W, A
-	call	LCD_Write_Hex
-	goto	measure_loop		; goto current line in code
+second_line:
+	lfsr	0, myArray	; Load FSR0 with address in RAM	
+	movlw	low highword(myTable2)	; address of data in PM
+	movwf	TBLPTRU, A		; load upper bits to TBLPTRU
+	movlw	high(myTable2)	; address of data in PM
+	movwf	TBLPTRH, A		; load high byte to TBLPTRH
+	movlw	low(myTable2)	; address of data in PM
+	movwf	TBLPTRL, A		; load low byte to TBLPTRL
+	movlw	myTable_2	; bytes to read
+	movwf 	counter, A		; our counter register
+loop2: 	tblrd*+			; one byte from PM to TABLAT, increment TBLPRT
+	movff	TABLAT, POSTINC0; move data from TABLAT to (FSR0), inc FSR0	
+	decfsz	counter, A		; count down to zero
+	bra	loop2		; keep going until finished
+		
+	movlw	myTable_2	; output message to UART
+	lfsr	2, myArray
+	call	UART_Transmit_Message
+
+	movlw	myTable_2-1	; output message to LCD
+				; don't send the final carriage return to LCD
+	lfsr	2, myArray
+	call	LCD_Write_Message
+	call	input2
+    
+input2:
+	call    KeyPad_input2
+	movff	0x30, PORTD, A
+	call	LCD_line2
+	movlw	0x32
+	goto	second_line
+	goto	$
+
+;measure_loop:
+;	call	ADC_Read
+;	movf	ADRESH, W, A
+;	call	LCD_Write_Hex
+;	movf	ADRESL, W, A
+;	call	LCD_Write_Hex
+;	goto	measure_loop		; goto current line in code
 	
 	; a delay subroutine if you need one, times around loop in delay_count
 delay:	decfsz	delay_count, A	; decrement until zero
