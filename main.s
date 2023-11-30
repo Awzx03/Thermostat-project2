@@ -1,13 +1,16 @@
 #include <xc.inc>
 
 extrn	UART_Setup, UART_Transmit_Message  ; external uart subroutines
-extrn	LCD_Setup, LCD_Write_Message, LCD_Write_Hex, LCD_line2, LCD_Send_Byte_D ; external LCD subroutines
+extrn	LCD_Setup, LCD_Write_Message, LCD_Write_Hex, LCD_line2, LCD_Send_Byte_D, LCD_clear ; external LCD subroutines
 extrn	ADC_Setup, ADC_Read		   ; external ADC subroutines
-extrn   KeyPad_Setup,KeyPad_input2, key_number
+extrn   KeyPad_Setup,KeyPad_input2, key_number, KeyPad_input4
 	
 psect	udata_acs   ; reserve data space in access ram
 counter:    ds 1    ; reserve one byte for a counter variable
 delay_count:ds 1    ; reserve one byte for counter in the delay routine
+temp_low:   ds 1
+temp_high:  ds 1
+    
     
 psect	udata_bank4 ; reserve data anywhere in RAM (here at 0x400)
 myArray:    ds 0x80 ; reserve 128 bytes for message data
@@ -40,7 +43,7 @@ setup:	bcf	CFGS	; point to Flash program memory
 	call	ADC_Setup	; setup ADC
 	call    KeyPad_Setup
 	movlw	0x00
-	movwf	TRISD
+	movwf	TRISD, A
 	goto	first_line
 	
 	; ******* Main programme ****************************************
@@ -92,7 +95,7 @@ loop2: 	tblrd*+			; one byte from PM to TABLAT, increment TBLPRT
 				; don't send the final carriage return to LCD
 	lfsr	2, myArray
 	call	LCD_Write_Message
-	call	input2
+	call	input4
     
 input2:
 	call    KeyPad_input2
@@ -100,6 +103,11 @@ input2:
 	call	LCD_line2
 	movlw	0x32
 	goto	second_line
+
+input4:
+	call    KeyPad_input4
+	movff	0x30, PORTD, A
+	call	LCD_clear
 	goto	$
 
 ;measure_loop:
