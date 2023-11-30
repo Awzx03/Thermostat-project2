@@ -1,7 +1,7 @@
 #include <xc.inc>
     
 global  KeyPad_Setup, KeyPad_readrow, test_none
-global	KeyPad_test, key_number, KeyPad_input2
+global	KeyPad_test, key_number, KeyPad_input2, KeyPad_input4
 extrn	LCD_Send_Byte_D
 
     
@@ -16,8 +16,8 @@ key_value:	ds 1
 key_number:	ds 1
 key_error:	ds 1
 digit_count:	ds 1
-temp_addr:	ds 1
-
+temp_low:	ds 1
+temp_high:	ds 1
     
     
 psect	Keypad_code,class=CODE
@@ -234,14 +234,15 @@ KeyPad_input2:
     
 input_loop2:
     temp    EQU 0x30
-    call	KeyPad_readrow
-    call	test_none
-    movwf	key_number,A
-    ;call       KeyPad_output
-    call	error_identifier
-    movlw	0x02
-    cpfseq	digit_count, A
-    bra		input_loop2
+    call    KeyPad_readrow
+    call    test_none
+    movwf   key_number,A
+    call    error_identifier
+    movlw   0x02
+    cpfseq  digit_count, A
+    bra	    input_loop2
+    movff   0x30, temp_low, A
+    movff   0x31, temp_high, A
     return
 
     
@@ -250,15 +251,13 @@ KeyPad_input4:
     movwf   digit_count
     
 input_loop4:
-    temp        EQU 0x40
-    call	KeyPad_readrow
-    call	test_none
-    movwf	key_number,A
-    ;call       KeyPad_output
-    call	error_identifier
-    movlw	0x04
-    cpfseq	digit_count, A
-    bra		input_loop4
+    call    KeyPad_readrow
+    call    test_none
+    movwf   key_number,A
+    call    error_identifier
+    movlw   0x04
+    cpfseq  digit_count, A
+    bra	    input_loop4
     return
     
     
