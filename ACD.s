@@ -131,7 +131,13 @@ ADC_Output:
 	addlw	'0'
 	call    LCD_Send_Byte_D
 	
-	movlw	100
+	movlw	0xFA
+	call	LCD_delay_ms
+	movlw	0xFA
+	call	LCD_delay_ms
+	movlw	0xFA
+	call	LCD_delay_ms
+	movlw	0xFA
 	call	LCD_delay_ms
 	return
 	
