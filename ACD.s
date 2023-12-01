@@ -1,7 +1,7 @@
 #include <xc.inc>
 
 global  ADC_Setup, ADC_Read, ADC_Mul_k, ADC_Mul_10, ADC_Output
-extrn	LCD_Send_Byte_D
+extrn	LCD_Send_Byte_D, LCD_delay_ms
 psect	udata_acs   ; reserve data space in access ram
 RES3:	    ds 1
 RES2:	    ds 1
@@ -114,6 +114,8 @@ Output_loop:
 	call    LCD_Send_Byte_D
 	decfsz  LCD_counter, A
 	bra	Output_loop
+	movlw	100
+	call	LCD_delay_ms
 	return
 	
 	
