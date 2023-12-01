@@ -1,6 +1,6 @@
 #include <xc.inc>
 
-global  ADC_Setup, ADC_Read, ADC_Mul_k, ADC_Mul_10, ADC_Output
+global  ADC_Setup, ADC_Output, Thermal_sensor_read
 extrn	LCD_Send_Byte_D, LCD_delay_ms
 psect	udata_acs   ; reserve data space in access ram
 RES3:	    ds 1
@@ -14,7 +14,7 @@ RES00:	    ds 1
 k_high:	    ds 1
 k_low:	    ds 1
 LCD_counter:	    ds 1
-
+ADC_output_array:   ds 4
     
 	
 psect	adc_code, class=CODE
@@ -39,6 +39,17 @@ adc_loop:
 	bra	adc_loop
 	return
 
+Thermal_sensor_read:
+	call	ADC_Read
+	lfsr	1, ADC_output_array
+	call	ADC_Mul_k
+	call	ADC_Mul_10
+	call	ADC_Mul_10
+	call	ADC_Mul_10
+	return
+	
+	
+	
 ADC_Mul_k:
 	movlw	0x41
 	movwf	k_high
@@ -106,14 +117,20 @@ ADC_Mul_10:
 	return
 	
 ADC_Output:
-	movlw	4
-	movwf	LCD_counter
-Output_loop:
-	movf	POSTINC2, W, A
+	movf	ADC_output_array+1, W, A
 	addlw	'0'
 	call    LCD_Send_Byte_D
-	decfsz  LCD_counter, A
-	bra	Output_loop
+	movf	ADC_output_array+2, W, A
+	addlw	'0'
+	call    LCD_Send_Byte_D
+	
+	movlw	'.'
+	call    LCD_Send_Byte_D
+	
+	movf	ADC_output_array+3, W, A
+	addlw	'0'
+	call    LCD_Send_Byte_D
+	
 	movlw	100
 	call	LCD_delay_ms
 	return
