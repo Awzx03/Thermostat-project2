@@ -2,7 +2,7 @@
 extrn	UART_Setup, UART_Transmit_Message  ; external uart subroutines
 extrn	LCD_Setup, LCD_Write_Message, LCD_Write_Hex, LCD_Send_Byte_D ; external LCD subroutines
 extrn	ADC_Setup, ADC_Read, ADC_Mul_k, ADC_Mul_10, ADC_Output		   ; external ADC subroutines
-	
+
 psect	udata_acs   ; reserve data space in access ram
 counter:    ds 1    ; reserve one byte for a counter variable
 delay_count:ds 1    ; reserve one byte for counter in the delay routine
@@ -59,10 +59,10 @@ measure_loop:
    
 	lfsr	1, ADC_output_array
 	call	ADC_Read
-	movf	ADRESH, W, A
-	call	LCD_Write_Hex
-	movf	ADRESL, W, A
-	call	LCD_Write_Hex
+	;movf	ADRESH, W, A
+	;call	LCD_Write_Hex
+	;movf	ADRESL, W, A
+	;call	LCD_Write_Hex
 	
 	
 	call	ADC_Mul_k
@@ -71,7 +71,6 @@ measure_loop:
 	call	ADC_Mul_10
 	lfsr	2, ADC_output_array
 	call	ADC_Output
-
 	goto	measure_loop	; goto current line in code
 	
 	; a delay subroutine if you need one, times around loop in delay_count
