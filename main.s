@@ -44,10 +44,7 @@ loop: 	tblrd*+			; one byte from PM to TABLAT, increment TBLPRT
 	movff	TABLAT, POSTINC0; move data from TABLAT to (FSR0), inc FSR0	
 	decfsz	counter, A		; count down to zero
 	bra	loop		; keep going until finished
-		
-	;movlw	length	; output message to UART
-	;lfsr	2, myArray
-	;call	UART_Transmit_Message
+
 	movlw	length	; output message to LCD
 	addlw	0xff		; don't send the final carriage return to LCD
 	lfsr	2, Temp_array
@@ -56,10 +53,7 @@ loop: 	tblrd*+			; one byte from PM to TABLAT, increment TBLPRT
 measure_loop:
 	call	LCD_line2
 	call	Thermal_sensor_read
-	;movf	ADRESH, W, A
-	;call	LCD_Write_Hex
-	;movf	ADRESL, W, A
-	;call	LCD_Write_Hex
+
 	call	ADC_Output
 	goto	measure_loop	; goto current line in code
 	
