@@ -1,6 +1,6 @@
 #include <xc.inc>
 
-global  ADC_Setup, ADC_Output, Thermal_sensor_read
+global  ADC_Setup, ADC_Output, Thermal_sensor_read, ADC_output_array
 extrn	LCD_Send_Byte_D, LCD_delay_ms
 psect	udata_acs   ; reserve data space in access ram
 RES3:	    ds 1
