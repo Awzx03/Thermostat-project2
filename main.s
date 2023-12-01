@@ -14,11 +14,10 @@ Temp_array:    ds 0x80 ; reserve 128 bytes for message data
 psect	data    
 ;	; ******* myTable, data in programme memory, and its length *****
 Temp_display:
-	db	'T','E','M','P',':',0x0a
+	db	'T','E','M','P','E','R','A','T','U','R','E',':', 0x0a
 ;					; message, plus carriage return
-	length   EQU	6	; length of data
+	length   EQU	13	; length of data
 	align	2
-    
 psect	code, abs	
 rst: 	org 0x0
  	goto	setup
@@ -46,17 +45,16 @@ loop: 	tblrd*+			; one byte from PM to TABLAT, increment TBLPRT
 	decfsz	counter, A		; count down to zero
 	bra	loop		; keep going until finished
 		
-	movlw	length	; output message to UART
+	;movlw	length	; output message to UART
 	;lfsr	2, myArray
 	;call	UART_Transmit_Message
-
-	movlw	length-1	; output message to LCD
-				; don't send the final carriage return to LCD
-	lfsr	2, Temp_display
+	movlw	length	; output message to LCD
+	addlw	0xff		; don't send the final carriage return to LCD
+	lfsr	2, Temp_array
 	call	LCD_Write_Message
-	call	LCD_line2
 	
 measure_loop:
+	call	LCD_line2
 	call	Thermal_sensor_read
 	;movf	ADRESH, W, A
 	;call	LCD_Write_Hex
