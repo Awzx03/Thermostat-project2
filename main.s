@@ -1,6 +1,6 @@
 #include <xc.inc>
 
-extrn	UART_Setup, UART_Transmit_Message  ; external uart subroutines
+;extrn	UART_Setup, UART_Transmit_Message  ; external uart subroutines
 extrn	LCD_Setup, LCD_Write_Message, LCD_line2, LCD_clear ; external LCD subroutines
 extrn	ADC_Setup, ADC_Output, Thermal_sensor_read		   ; external ADC subroutines
 extrn   KeyPad_Setup,KeyPad_input2, key_number, KeyPad_input4
@@ -34,7 +34,7 @@ rst: 	org 0x0
 	; ******* Programme FLASH read Setup Code ***********************
 setup:	bcf	CFGS	; point to Flash program memory  
 	bsf	EEPGD 	; access Flash program memory
-	call	UART_Setup	; setup UART
+	;call	UART_Setup	; setup UART
 	call	LCD_Setup	; setup UART
 	call	ADC_Setup	; setup ADC
 	call    KeyPad_Setup
