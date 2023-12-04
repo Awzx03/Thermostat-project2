@@ -1,7 +1,7 @@
 #include <xc.inc>
-extrn	UART_Setup, UART_Transmit_Message  ; external uart subroutines
 extrn	LCD_Setup, LCD_Write_Message, LCD_Write_Hex, LCD_Send_Byte_D, LCD_line2 ; external LCD subroutines
-extrn	ADC_Setup,ADC_Output, Thermal_sensor_read		   ; external ADC subroutines
+extrn	ADC_Setup,ADC_Output, Thermal_sensor_read		  
+extrn	PID_error, PID_Setup
 
 psect	udata_acs   ; reserve data space in access ram
 counter:    ds 1    ; reserve one byte for a counter variable
@@ -28,6 +28,7 @@ setup:	bcf	CFGS	; point to Flash program memory
 	;call	UART_Setup	; setup UART
 	call	LCD_Setup	; setup UART
 	call	ADC_Setup	; setup ADC
+	call	PID_Setup
 	goto	start
 	
 	; ******* Main programme ****************************************
@@ -55,9 +56,12 @@ measure_loop:
 	call	Thermal_sensor_read
 
 	call	ADC_Output
+	call	PID_error
 	goto	measure_loop	; goto current line in code
 	
-	; a delay subroutine if you need one, times around loop in delay_count
+
+
+
 delay:	decfsz	delay_count, A	; decrement until zero
 	bra	delay
 	return
