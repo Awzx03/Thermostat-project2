@@ -58,8 +58,8 @@ measure_loop:
 	call	Thermal_sensor_read
 
 	call	ADC_Output
-	;call	PID_error
-	call	PWM_update
+	call	PID_error
+	;call	PWM_update
 
 	goto	measure_loop	; goto current line in code
 	
