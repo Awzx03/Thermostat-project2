@@ -2,6 +2,7 @@
 extrn	LCD_Setup, LCD_Write_Message, LCD_Write_Hex, LCD_Send_Byte_D, LCD_line2 ; external LCD subroutines
 extrn	ADC_Setup,ADC_Output, Thermal_sensor_read		  
 extrn	PID_error, PID_Setup
+extrn	PWM_Setup, PWM_update
 
 psect	udata_acs   ; reserve data space in access ram
 counter:    ds 1    ; reserve one byte for a counter variable
@@ -29,6 +30,7 @@ setup:	bcf	CFGS	; point to Flash program memory
 	call	LCD_Setup	; setup UART
 	call	ADC_Setup	; setup ADC
 	call	PID_Setup
+	call	PWM_Setup
 	goto	start
 	
 	; ******* Main programme ****************************************
@@ -56,7 +58,9 @@ measure_loop:
 	call	Thermal_sensor_read
 
 	call	ADC_Output
-	call	PID_error
+	;call	PID_error
+	call	PWM_update
+
 	goto	measure_loop	; goto current line in code
 	
 
