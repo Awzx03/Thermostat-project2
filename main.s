@@ -1,7 +1,7 @@
 #include <xc.inc>
 extrn	LCD_Setup, LCD_Write_Message, LCD_Write_Hex, LCD_Send_Byte_D, LCD_line2 ; external LCD subroutines
 extrn	ADC_Setup,ADC_Output, Thermal_sensor_read		  
-extrn	PID_error, PID_Setup
+extrn	PID_error, PID_Setup, hex_convert
 extrn	PWM_Setup, PWM_update
 
 psect	udata_acs   ; reserve data space in access ram
@@ -58,6 +58,10 @@ measure_loop:
 	call	Thermal_sensor_read
 
 	call	ADC_Output
+	
+	call	hex_convert
+	
+	
 	call	PID_error
 	;call	PWM_update
 
