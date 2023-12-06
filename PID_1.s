@@ -1,6 +1,6 @@
 #include <xc.inc>
     
-global  PID_error, PID_Setup
+global  PID_error, PID_Setup, hex_convert
 extrn	ADC_Setup, ADC_Output, Thermal_sensor_read, ADC_output_array
     
 psect	udata_acs   ; reserve data space in access ram
@@ -19,7 +19,12 @@ PID_Setup:
     movwf   set_T
     movlw   0x12
     movwf   set_T+1
+    movlw   0x02
+    movwf   0x40, A
+    movlw   0x56
+    movwf   0x41, A
     return
+    
 PID_error:
     movff   ADC_output_array, current_T, A
     movff   ADC_output_array+1, current_T+1, A
@@ -35,8 +40,6 @@ PID_error:
     iorwf   current_T+2, f, A
     return
     
-    
-    
        
 dec_convert3:
     movlw   0xF6
@@ -44,4 +47,12 @@ dec_convert3:
     return
 
 
+
+
+    
+
+
+    
+    
+    
 end
