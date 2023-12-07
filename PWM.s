@@ -9,7 +9,7 @@ duty_cycle	    equ 0x40
     
 psect	uart_code,class=CODE
 PWM_Setup:
-    bcf	    TRISC, PORTC_RC2_POSN, A 
+    ;bcf	    TRISC, PORTC_RC2_POSN, A 
     bcf	    TRISG, PORTG_RG3_POSN, A 
     movlw   0x3C
     movwf   CCP4CON, A
