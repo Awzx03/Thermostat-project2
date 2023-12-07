@@ -2,6 +2,7 @@
     
 global  PWM_Setup, PWM_update
 extrn	ADC_Setup, ADC_Output, Thermal_sensor_read, ADC_output_array
+extrn	PWM_output
     
 psect	udata_acs   ; reserve data space in access ram
 duty_cycle	    equ 0x40
@@ -25,7 +26,7 @@ PWM_Setup:
     
     
 PWM_update:
-    movlw   0xF9
+    movf    PWM_output, W, A
     movwf   CCPR4L, A
     return
 
