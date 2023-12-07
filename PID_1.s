@@ -130,23 +130,29 @@ add_100:
 
 
 PID_output:
-   ; movlw   0xf
-    ;cpfsgt  
-    
-    movlw   0x64
-    cpfsgt  error_T_low, A
+    movlw   0xf0
+    cpfslt  error_T_high, A
+    goto    turn_off		;turn off when temperature is higher than set T
     goto    P_control
+ 
+P_control:
+    movlw   0x3E		;6.2 degrees difference
+    cpfsgt  error_T_low, A
+    goto    P_control2
     movlw   0xf9
     movwf   PWM_output
     return
     
-P_control:
-    movlw   0x02
+P_control2:
+    movlw   0x04
     mulwf   error_T_low, A
     movff   PRODL, PWM_output
     return
     
-
+turn_off:
+    movlw   0x00
+    movwf   PWM_output
+    return
 
     
     
