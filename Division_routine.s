@@ -18,12 +18,12 @@ Divide_start:
     movff   error_sum_high, numerator_high, A
     clrf    div_result, A
 Divide_loop:
-    bcf	    STATUS, 0
+    bcf	    STATUS, 0, A
     movf    time_count_l, W, A
     subwf   numerator_low, f, A
     movf    time_count_h, W, A
     subwfb  numerator_high, f, A
-    btfsc   STATUS, 0
+    btfsc   STATUS, 0, A
     goto    result_loop
     return
     
