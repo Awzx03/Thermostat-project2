@@ -19,6 +19,7 @@ key_error:	ds 1
 digit_count:	ds 1
 set_T_low_dec:	ds 1
 set_T_high_dec:	ds 1
+;temp:		ds 4
     
     
 psect	Keypad_code,class=CODE
@@ -242,8 +243,8 @@ input_loop2:
     movlw   0x02
     cpfseq  digit_count, A
     bra	    input_loop2
-    movff   0x30, set_T_high_dec, A
-    movff   0x31, set_T_low_dec, A
+    movff   temp, set_T_high_dec, A
+    movff   temp+1, set_T_low_dec, A
     return
 
     
