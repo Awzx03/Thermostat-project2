@@ -40,8 +40,7 @@ PID_Setup:
     clrf    error_sum_high, A
     clrf    error_T_low, A
     clrf    error_T_high, A
-    clrf    Output_l, A
-    clrf    Output_h, A
+    
     clrf    set_T_low, A
     clrf    set_T_high, A
     clrf    time_count_l, A
@@ -54,6 +53,8 @@ PID_Setup:
     
     
 PID_error:
+    clrf    Output_l, A
+    clrf    Output_h, A
     movlw   0x01
     addwf   time_count_l
     movlw   0x00
@@ -81,6 +82,7 @@ PID_integral:
     addwfc  error_sum_high, f, A
     call    Divide_start
     rrcf    div_result, f, A
+    bcf	    STATUS, 0
     movf    div_result, W, A
     addwf   Output_l, f, A
     movlw   0x00
@@ -94,6 +96,10 @@ PID_derivative:
     subwfb  error_T_high, W, A
     movwf   error_d_high
    
+    movf    error_d_low, W, A
+    addwf   Output_l, f, A
+    movf    error_d_high, W, A
+    addwfc  Output_h, f, A
     
     movff   error_T_low, former_e_low, A
     movff   error_T_high, former_e_high, A
@@ -104,24 +110,33 @@ PID_output:
     movlw   0xf0
     cpfslt  error_T_high, A
     goto    turn_off		;turn off when temperature is higher than set T
-    goto    PID_switch
+    goto    P_control
     
  
-PID_switch:
-    movlw   0x3E		;6.2 degrees difference
-    cpfsgt  error_T_low, A
-    goto    P_control
-    movlw   0xf9
-    movwf   PWM_output
-    return
+;PID_switch:
+    ;movlw   0x3E		;6.2 degrees difference
+    ;cpfsgt  Output_l, A
+    ;goto    P_control
+    ;movlw   0xf9
+    ;movwf   PWM_output
+    ;return
     
 P_control:
     movlw   0x04
-    mulwf   error_T_low, A
-    movff   PRODL, PWM_output
+    mulwf   Output_l, A
+    movlw   0x00
+    cpfsgt  PRODH, A
+    goto    Normal_output
+    goto    Full_output
+
+Normal_output:
+    movff    PRODL, PWM_output
     return
 
-I_control:
+Full_output:
+    movlw   0xff
+    movwf   PWM_output
+    return
     
  
 turn_off:
@@ -133,9 +148,9 @@ turn_off:
     
     
 dec_convert:
-    movlw   0x02
+    movlw   0x03
     movwf   0x40, A
-    movlw   0x08
+    movlw   0x02
     movwf   0x41, A
    
     
