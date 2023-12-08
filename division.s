@@ -6,7 +6,7 @@ extrn	ADC_Setup, ADC_Output, Thermal_sensor_read, ADC_output_array
 extrn   error_sum_low, error_sum_high, time_count_l, time_count_h
     
 psect	udata_acs   ; reserve data space in access ram	    	
-div_count:		ds 1
+
 numerator_low:		ds 1
 numerator_high:		ds 1
 div_result:		ds 1
@@ -32,13 +32,7 @@ result_loop:
     movlw   0x01
     addwf   div_result, f, A
     bra	    Divide_loop
-    
-    
-    
-    
-    
 
-    
-    
+   
     
 end
