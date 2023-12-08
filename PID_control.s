@@ -4,8 +4,7 @@ global  PID_error, PID_Setup, dec_convert, PWM_output, PID_output
 global	error_sum_low, error_sum_high, time_count_l, time_count_h
 extrn	ADC_Setup, ADC_Output, Thermal_sensor_read, ADC_output_array
 extrn	Divide_start, div_result
-extrn  set_T_low_dec, set_T_high_dec	;set temperature in decimal from keypad
-
+extrn	set_T_high_dec, set_T_low_dec
     
 psect	udata_acs   ; reserve data space in access ram
 Kp	    equ 1
@@ -25,15 +24,18 @@ time_count_h:		ds 1
 set_T_low:		ds 1
 set_T_high:		ds 1
     
+
 Output_l:		ds 1
 Output_h:		ds 1
-     
+    
+    
 I_output_l:		ds 1
 I_output_h:		ds 1
 D_output_l:		ds 1
 D_output_h:		ds 1
     
 PWM_output:		ds 1
+    
 psect	uart_code,class=CODE
 PID_Setup:
     clrf    error_sum_low, A
@@ -143,14 +145,16 @@ turn_off:
     movlw   0x00
     movwf   PWM_output
     return
-
+ 
 dec_convert:
-    movf    set_T_high_dec, W, A			;load set temperature ten's digit
-    movwf   0x40, A			
-    movf    set_T_low_dec, W, A			;load set temperature ones digit
+    movf    set_T_high_dec, W, A	;load set temperature decimal ten's digit 
+    movwf   0x40, A
+    movf    set_T_low_dec, W, A		;set temperature decimal ones digit
     movwf   0x41, A
    
-convert_loop1:				;convert from decimal to hex
+    
+    
+convert_loop1:
     movlw   0x00
     cpfseq  0x41, A
     goto    add_10
@@ -181,4 +185,6 @@ add_100:
     addwfc  set_T_high, f, A
     goto    convert_loop2
    
+    
 end
+
