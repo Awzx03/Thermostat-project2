@@ -42,7 +42,7 @@ setup:	bcf	CFGS	; point to Flash program memory
 	call    KeyPad_Setup
 	call	PID_Setup
 	call	PWM_Setup
-	goto	first_line
+	goto	first_line	
 	
 	; ******* Main programme ****************************************
 first_line: 	
