@@ -123,10 +123,22 @@ PID_output:
     
 P_control:
     movlw   0x04
-    mulwf   error_T_low, A
-    movff    Output_l, PWM_output
+    mulwf   Output_l, A
+    movlw   0x00
+    cpfsgt  PRODH, A
+    goto    Normal_output
+    goto    Full_output
+
+Normal_output:
+    movff    PRODL, PWM_output
+    return
+
+Full_output:
+    movlw   0xff
+    movwf   PWM_output
     return
     
+ 
 turn_off:
     movlw   0x00
     movwf   PWM_output
