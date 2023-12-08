@@ -122,8 +122,8 @@ PID_output:
     ;return
     
 P_control:
-    ;movlw   0x04
-    ;mulwf   error_T_low, A
+    movlw   0x04
+    mulwf   error_T_low, A
     movff    Output_l, PWM_output
     return
     
@@ -133,9 +133,9 @@ turn_off:
     return
 
 dec_convert:
-    movlw   set_T_high_dec			;load set temperature ten's digit
+    movf    set_T_high_dec, W, A			;load set temperature ten's digit
     movwf   0x40, A			
-    movlw   set_T_low_dec			;load set temperature ones digit
+    movf    set_T_low_dec, W, A			;load set temperature ones digit
     movwf   0x41, A
    
 convert_loop1:				;convert from decimal to hex
