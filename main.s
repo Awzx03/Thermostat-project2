@@ -4,6 +4,8 @@
 extrn	LCD_Setup, LCD_Write_Message, LCD_line2, LCD_clear ; external LCD subroutines
 extrn	ADC_Setup, ADC_Output, Thermal_sensor_read		   ; external ADC subroutines
 extrn   KeyPad_Setup,KeyPad_input2, key_number, KeyPad_input4
+extrn	PID_error, PID_Setup, PID_output
+extrn	PWM_Setup, PWM_update
 	
 psect	udata_acs   ; reserve data space in access ram
 counter:    ds 1    ; reserve one byte for a counter variable
@@ -38,6 +40,8 @@ setup:	bcf	CFGS	; point to Flash program memory
 	call	LCD_Setup	; setup UART
 	call	ADC_Setup	; setup ADC
 	call    KeyPad_Setup
+	call	PID_Setup
+	call	PWM_Setup
 	goto	first_line
 	
 	; ******* Main programme ****************************************
@@ -120,6 +124,9 @@ negative_feedback_loop:
 	call	LCD_line2
 	call	Thermal_sensor_read
 	call	ADC_Output
+	call	PID_error
+	call	PID_output
+	call	PWM_update
 	goto	negative_feedback_loop	
 	
 	
