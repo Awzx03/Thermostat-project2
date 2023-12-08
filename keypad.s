@@ -2,6 +2,7 @@
     
 global  KeyPad_Setup, KeyPad_readrow, test_none
 global	KeyPad_test, key_number, KeyPad_input2, KeyPad_input4
+global  set_T_low_dec, set_T_high_dec
 extrn	LCD_Send_Byte_D
 
     
@@ -16,8 +17,8 @@ key_value:	ds 1
 key_number:	ds 1
 key_error:	ds 1
 digit_count:	ds 1
-temp_low:	ds 1
-temp_high:	ds 1
+set_T_low_dec:	ds 1
+set_T_high_dec:	ds 1
     
     
 psect	Keypad_code,class=CODE
@@ -241,8 +242,8 @@ input_loop2:
     movlw   0x02
     cpfseq  digit_count, A
     bra	    input_loop2
-    movff   0x30, temp_low, A
-    movff   0x31, temp_high, A
+    movff   0x30, set_T_high_dec, A
+    movff   0x31, set_T_low_dec, A
     return
 
     
