@@ -1,7 +1,7 @@
 #include <xc.inc>
     
 global  PID_error, PID_Setup, dec_convert, PWM_output, PID_output
-global	error_sum_low, error_sum_high, time_count_l, time_count_h
+global	error_sum_low, error_sum_high, time_count_l, time_count_h, error_T_high,  set_T_low,  set_T_high, dec_convert
 extrn	ADC_Setup, ADC_Output, Thermal_sensor_read, ADC_output_array
 extrn	Divide_start, div_result
 extrn	set_T_high_dec, set_T_low_dec
@@ -49,7 +49,7 @@ PID_Setup:
     clrf    time_count_h, A
     clrf    former_e_low
     clrf    former_e_high
-    call    dec_convert
+    
     
     return
     
@@ -147,6 +147,7 @@ turn_off:
     return
  
 dec_convert:
+    bcf	    STATUS, 0, A
     movf    set_T_high_dec, W, A	;load set temperature decimal ten's digit 
     movwf   0x40, A
     movf    set_T_low_dec, W, A		;set temperature decimal ones digit
