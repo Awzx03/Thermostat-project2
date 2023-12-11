@@ -2,8 +2,8 @@
     
 global  KeyPad_Setup, KeyPad_readrow, test_none
 global	KeyPad_test, key_number, KeyPad_input2, KeyPad_input4
-global  set_T_low_dec, set_T_high_dec
-extrn	LCD_Send_Byte_D
+global  set_T_low_dec, set_T_high_dec, temp
+extrn	LCD_Send_Byte_D, dec_convert
 
     
 psect	udata_acs   ; reserve data space in access ram
@@ -19,7 +19,7 @@ key_error:	ds 1
 digit_count:	ds 1
 set_T_low_dec:	ds 1
 set_T_high_dec:	ds 1
-;temp:		ds 4
+temp:		ds 4
     
     
 psect	Keypad_code,class=CODE
@@ -235,7 +235,7 @@ KeyPad_input2:
     movwf   digit_count
     
 input_loop2:
-    temp    EQU 0x30
+    ;temp    EQU 0x30
     call    KeyPad_readrow
     call    test_none
     movwf   key_number,A
@@ -245,6 +245,7 @@ input_loop2:
     bra	    input_loop2
     movff   temp, set_T_high_dec, A
     movff   temp+1, set_T_low_dec, A
+    call    dec_convert
     return
 
     
