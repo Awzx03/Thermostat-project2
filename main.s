@@ -88,9 +88,9 @@ loop2: 	tblrd*+			; one byte from PM to TABLAT, increment TBLPRT
     
 input2:
 	call    KeyPad_input2
-	movff	0x30, PORTD, A
+	;movff	0x30, PORTD, A
 	call	LCD_line2
-	movlw	0x32
+	;movlw	0x32
 	goto	second_line
 
 input4:
@@ -121,6 +121,7 @@ loopT: 	tblrd*+			; one byte from PM to TABLAT, increment TBLPRT
 	goto	negative_feedback_loop
 
 negative_feedback_loop:
+	
 	call	LCD_line2
 	call	Thermal_sensor_read
 	call	ADC_Output
