@@ -1,7 +1,8 @@
 #include <xc.inc>
 
-global  ADC_Setup, ADC_Output, Thermal_sensor_read, ADC_output_array
+global  ADC_Setup, ADC_Output, Thermal_sensor_read, ADC_output_array,UART_transmit
 extrn	LCD_Send_Byte_D, LCD_delay_ms
+extrn   UART_Transmit_Byte
 psect	udata_acs   ; reserve data space in access ram
 RES3:	    ds 1
 RES2:	    ds 1
@@ -41,6 +42,7 @@ adc_loop:
 
 Thermal_sensor_read:
 	call	ADC_Read
+	
 	lfsr	1, ADC_output_array
 	call	ADC_Mul_k
 	call	ADC_Mul_10
@@ -135,13 +137,14 @@ ADC_Output:
 	call	LCD_delay_ms
 	movlw	0xFA
 	call	LCD_delay_ms
-	movlw	0xFA
-	call	LCD_delay_ms
-	movlw	0xFA
-	call	LCD_delay_ms
 	return
 	
-	
+UART_transmit:
+	movf	ADRESH, W, A
+	call	UART_Transmit_Byte
+	movf	ADRESL, W, A
+	call	UART_Transmit_Byte
+	return
 	
     
 end
