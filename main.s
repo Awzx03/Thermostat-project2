@@ -126,9 +126,9 @@ negative_feedback_loop:
 	bsf	PORTF, 2
 	call	LCD_line2
 	call	Thermal_sensor_read
-	bcf	PORTF, 2
-	call	UART_transmit
 	
+	call	UART_transmit
+	bcf	PORTF, 2
 	call	ADC_Output
 	call	PID_error
 	call	PID_output
