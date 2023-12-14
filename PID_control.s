@@ -124,7 +124,7 @@ PID_output:
     ;return
     
 P_control:
-    movlw   0x04
+    movlw   0x03
     mulwf   Output_l, A
     movlw   0x00
     cpfsgt  PRODH, A
