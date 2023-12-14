@@ -137,6 +137,15 @@ ADC_Output:
 	call	LCD_delay_ms
 	movlw	0xFA
 	call	LCD_delay_ms
+	movlw	0xFA
+	call	LCD_delay_ms
+	movlw	0xFA
+	call	LCD_delay_ms
+	movlw	0xFA
+	call	LCD_delay_ms
+	movlw	0xFA
+	call	LCD_delay_ms
+
 	return
 	
 UART_transmit:
