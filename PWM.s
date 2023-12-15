@@ -20,7 +20,7 @@ PWM_Setup:
     movlw   0x06
     movwf   T2CON, A
     movlw   0xFF
-    movwf   PR2		;period 0.25ms
+    movwf   PR2		;period 0.256ms
     clrf    CCPTMRS1
     return
     
