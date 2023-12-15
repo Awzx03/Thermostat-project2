@@ -97,7 +97,29 @@ PID_derivative:
     movf    former_e_high, W, A
     subwfb  error_T_high, W, A
     movwf   error_d_high
-   
+    
+    
+    
+    bcf	    STATUS, 0
+    rlcf    error_d_low, f, A
+    rlcf    error_d_high, f, A
+    bcf	    STATUS, 0
+    
+    bcf	    STATUS, 0
+    rlcf    error_d_low, f, A
+    rlcf    error_d_high, f, A
+    bcf	    STATUS, 0
+    
+    bcf	    STATUS, 0
+    rlcf    error_d_low, f, A
+    rlcf    error_d_high, f, A
+    bcf	    STATUS, 0
+    
+ 
+    
+    
+    
+    
     movf    error_d_low, W, A
     addwf   Output_l, f, A
     movf    error_d_high, W, A
@@ -112,16 +134,9 @@ PID_output:
     movlw   0xf0
     cpfslt  error_T_high, A
     goto    turn_off		;turn off when temperature is higher than set T
+    ;goto    Full_output		;without pid
     goto    P_control
     
- 
-;PID_switch:
-    ;movlw   0x3E		;6.2 degrees difference
-    ;cpfsgt  Output_l, A
-    ;goto    P_control
-    ;movlw   0xf9
-    ;movwf   PWM_output
-    ;return
     
 P_control:
     movlw   0x03
