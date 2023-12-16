@@ -54,7 +54,7 @@ PID_Setup:
     return
     
     
-PID_error:
+PID_error:			;Calculate the errors 
     clrf    Output_l, A
     clrf    Output_h, A
     movlw   0x01
@@ -77,7 +77,7 @@ PID_error:
     addwfc  Output_h, f, A
     
 
-PID_integral:
+PID_integral:			;Calculate the integral term
     movf    error_T_low, W, A
     addwf   error_sum_low, f, A
     movf    error_T_high, W, A
@@ -85,12 +85,12 @@ PID_integral:
     call    Divide_start
     rrcf    div_result, f, A
     bcf	    STATUS, 0
-    movf    div_result, W, A
+    movf    div_result, W, A	;divide the integral by time duration
     addwf   Output_l, f, A
     movlw   0x00
     addwfc  Output_h, f, A
     
-PID_derivative: 
+PID_derivative:			;Calculate the error derivatives
     movf    former_e_low, W, A
     subwf   error_T_low, W, A
     movwf   error_d_low
@@ -100,7 +100,7 @@ PID_derivative:
     
     
     
-    bcf	    STATUS, 0
+    bcf	    STATUS, 0		;Scale up the derivative term by 8 times 
     rlcf    error_d_low, f, A
     rlcf    error_d_high, f, A
     bcf	    STATUS, 0
