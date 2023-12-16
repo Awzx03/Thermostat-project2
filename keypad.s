@@ -7,11 +7,11 @@ extrn	LCD_Send_Byte_D, dec_convert
 
     
 psect	udata_acs   ; reserve data space in access ram
-KeyPad_counter: ds 1	    ; reserve 1 byte for variable 
-KP_cnt_l:	ds 1   ; reserve 1 byte for variable 
-KP_cnt_h:	ds 1   ; reserve 1 byte for variable
-KP_cnt_ms:	ds 1   ; reserve 1 byte for ms counter
-KP_tmp:		ds 1   ; reserve 1 byte for temporary use
+KeyPad_counter: ds 1	    
+KP_cnt_l:	ds 1   
+KP_cnt_h:	ds 1   
+KP_cnt_ms:	ds 1   
+KP_tmp:		ds 1   
 low_bits:	ds 1
 key_value:	ds 1
 key_number:	ds 1
@@ -57,7 +57,7 @@ KeyPad_value:
     iorwf   low_bits, W, A
     movwf   key_value, A
  
-KeyPad_test:
+KeyPad_test:	    ; Routine to identify the inputs from keypad
     movlw	0xff
     cpfseq	key_value, A
     return
@@ -172,7 +172,7 @@ test_error:
     movwf   key_error
     retlw   0xff
     
-error_identifier:
+error_identifier:	;check whether the input is corret
     movlw   0xf0
     cpfseq  key_error
     call    KeyPad_output
@@ -230,7 +230,7 @@ fourth:
     
     
     
-KeyPad_input2:
+KeyPad_input2:		    ;Routine to input 2-digit target temp
     movlw   0x00
     movwf   digit_count
     
@@ -249,7 +249,7 @@ input_loop2:
     return
 
     
-KeyPad_input4:
+KeyPad_input4:		    ;Routine to input 4-digit target time
     movlw   0x00
     movwf   digit_count
     
