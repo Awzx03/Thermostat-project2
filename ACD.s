@@ -118,7 +118,7 @@ ADC_Mul_10:
 	movff	RES3, POSTINC1
 	return
 	
-ADC_Output:
+ADC_Output:		;routine to dispkay measured temperature on LCD
 	movf	ADC_output_array+1, W, A
 	addlw	'0'
 	call    LCD_Send_Byte_D
@@ -148,7 +148,8 @@ ADC_Output:
 
 	return
 	
-UART_transmit:
+UART_transmit:			;Output the measured temperature 
+				;to UART for performance tests
 	movf	ADRESH, W, A
 	call	UART_Transmit_Byte
 	movf	ADRESL, W, A
