@@ -21,9 +21,9 @@ ADC_output_array:   ds 4
 psect	adc_code, class=CODE
 
 ADC_Setup:
-	bsf	TRISA, PORTA_RA3_POSN, A  ; pin RA3==AN0 input
+	bsf	TRISA, PORTA_RA3_POSN, A  ; pin RA3==AN3 input
 	movlb	0x0f
-	bsf	ANSEL3	    ; set AN0 to analog
+	bsf	ANSEL3	    ; set AN3 to analog
 	movlb	0x00
 	movlw   0x0D	    ; select AN0 for measurement
 	movwf   ADCON0, A   ; and turn ADC on
